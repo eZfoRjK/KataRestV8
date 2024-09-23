@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -26,6 +27,7 @@ public class AdminRestController {
 
     // все пользователи
     @GetMapping("/users")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public ResponseEntity<Set<User>> getAllUsers() {
         Set<User> allUsers = userService.listUsers();
         return ResponseEntity.ok(allUsers);
@@ -33,6 +35,7 @@ public class AdminRestController {
 
     // удаление
     @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userService.findUser(id) == null) {
             return ResponseEntity.notFound().build();
@@ -53,6 +56,7 @@ public class AdminRestController {
 
     // новый юзер
     @PostMapping("/users")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
             Set<Role> roles = new HashSet<>();
@@ -77,6 +81,7 @@ public class AdminRestController {
 
     // редактирую
     @PutMapping("/users/{id}")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User changedUser) {
         if (userService.findUser(id) == null) {
             return ResponseEntity.notFound().build();
